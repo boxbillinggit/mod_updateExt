@@ -1,0 +1,40 @@
+{% extends request.ajax ? "layout_blank.phtml" : "layout_default.phtml" %}
+
+{% block meta_title %}{% trans 'Update Extensions' %}{% endblock %}
+
+{% set active_menu = 'updateExt' %}
+
+{% block content %}
+
+<div class="widget first">
+    <div class="head">
+        <h5>{% trans 'Update Extensions' %}</h5>
+    </div>
+
+    <div class="help">
+        <h3>{% trans 'Moduł do aktualizacji modułów BoxBilling.pl' %}</h3>
+    </div>
+
+     <table class="tableStatic wide">
+        <tbody>
+        {% for ext in admin.extension_get_list %}
+            <tr>
+                <td>{{ ext.name }}<br />
+                <strong>Wersja na Serwerze:</strong> {{ ext.version }}<br />
+                {% if ext.download_url == null %} {% else %} <strong>Wersja do pobrania:</strong> {{ result[ext.id]['version_git'] }} {% endif %}</td>
+                <td align="right">{% if ext.download_url == null %} {% else %}   {% if ext.version <= result[ext.id]['version_git'] %}
+                
+                <form method="post" action="admin/updateExt/update" class="mainForm api-form" data-api-msg="{% trans 'Update' %}">
+                <input type="hidden" name="filename" value="{{ext.type}}_{{ext.id}}" />
+                <input type="hidden" name="url" value="{{ext.download_url}}" />
+                <button type="submit" class="greyishBtn">{% trans 'Update' %}</button>
+                </form> {% endif %} {% endif %} </td>
+            </tr>
+         {% endfor %}
+
+        </tbody>
+    </table>
+    
+</div>
+
+{% endblock %}
