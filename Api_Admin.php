@@ -65,16 +65,16 @@ class Box_Mod_UpdateExt_Api_Admin extends Api_Abstract
         }
 		zip_close($open);
 		
-		Box_Mod_UpdateExt_Api_Admin::deleteFiles('bb-uploads/'.$get['filename'].'/','*',true);
+		Box_Mod_UpdateExt_Api_Admin::deleteFiles('bb-modules/'.$get['filename'].'/','*',true);
 		
 		$zipArchive = new ZipArchive();
 		$result = $zipArchive->open('bb-uploads/'.$get['filename'].'.zip');
 		
 		if ($result === TRUE) {				
-			$zipArchive->renameName('bb-uploads/'.$get['filename'],'bb-uploads/'.$file[0]);
-			$zipArchive ->extractTo("bb-uploads/");
+			$zipArchive->renameName('bb-modules/'.$get['filename'],'modules/'.$file[0]);
+			$zipArchive ->extractTo("bb-modules/");
 			$zipArchive ->close();
-			rename($_SERVER['DOCUMENT_ROOT'].'/bb-uploads/'.$file[0],$_SERVER['DOCUMENT_ROOT'].'/bb-uploads/'.$get['filename']);
+			rename($_SERVER['DOCUMENT_ROOT'].'/bb-modules/'.$file[0],$_SERVER['DOCUMENT_ROOT'].'/bb-modules/'.$get['filename']);
 			unlink('bb-uploads/'.$get['filename'].'.zip');
 		} else {
 			// Do something on error
