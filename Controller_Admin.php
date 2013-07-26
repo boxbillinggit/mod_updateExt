@@ -29,6 +29,9 @@ class Box_Mod_UpdateExt_Controller_Admin
      * 
      * @return array
      */
+	 
+	 public $key_github = '?client_id=6d4f7804e5892ce692c1&client_secret=ca471d8524cc1d015b79c17c20dc63d2fb7b7150';
+	 
     public function fetchNavigation()
     {
         return array(
@@ -122,23 +125,44 @@ class Box_Mod_UpdateExt_Controller_Admin
 		
 		$result = $api->extension_get_list($params);
 		
+		$files = json_decode($this->__curl('https://api.github.com/users/zaba12/repos?client_id=6d4f7804e5892ce692c1&client_secret=ca471d8524cc1d015b79c17c20dc63d2fb7b7150'));
+	
 		$i=1;
-		foreach($result as $kly => $val) {
-			if(empty($val['download_url'])) { 
-				$result[$kly] += array("version_git" => NULL);
-			} else {
-				$urls = $val['download_url']."/master/manifest.json";
+		$a=1;
+		$results=array();
+		
+		unset($files[0]); //wywalam bb-library
+		
+		foreach($files as $klucz => $valss) {
+			
+		$pdo = Box_Db::getPdo();
+        $query="SELECT `name`,`version` FROM `extension` WHERE `name` ='".str_replace("mod_","",$valss->name)."'";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute();
+		$checkIfExits = $stmt->fetchAll();
+			
+				$urls = $valss->svn_url."/master/manifest.json";
 				$repl = str_replace("https://","https://raw.",$urls);
-				
-				$decode = json_decode($this->__curl($repl));
-				
-				$results['result'][$val['id']] = array("version_git" => $decode->version);	
+				$decode = json_decode($this->__curl($repl.$this->key_github));
+
+			$results['json'][$valss->name]['name'] = ucfirst(str_replace("mod_","",$valss->name));
+			$results['json'][$valss->name]['namefull'] = $valss->name;
+			$results['json'][$valss->name]['full_name'] = $valss->full_name;
+			$results['json'][$valss->name]['svn_url'] = $valss->svn_url;
+
+			$results['json'][$valss->name]['git_version'] = "".$decode->version."";
+			if(empty($checkIfExits[0]['version'])){
+			$results['json'][$valss->name]['aktualna_wersja'] = "Nie Zainstalowane";
+			} else {
+			$results['json'][$valss->name]['aktualna_wersja'] = "".$checkIfExits[0]['version']."";
 			}
-		$i++;
-		}
+
+		    $a++;
+		    }
 
 		$dates = json_decode($this->__curl($url.'mod_autoticket/commits?per_page=100'));
-
+		
+	
 		return $app->render('mod_updateExt_index', $results);
 
     }

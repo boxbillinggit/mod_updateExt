@@ -17,27 +17,24 @@
 
      <table class="tableStatic wide">
         <tbody>
-        {% for ext in admin.extension_get_list %}
-            <tr>
-                <td>{{ ext.name }}<br />
-                <strong>Wersja na Serwerze:</strong> {{ ext.version }}<br />
-                {% if ext.download_url == null %} {% else %} <strong>Wersja do pobrania:</strong> {{ result[ext.id]['version_git'] }} {% endif %}</td>
-                <td align="right">{% if ext.download_url == null %} {% else %}   {% if ext.version <= result[ext.id]['version_git'] %}
-                
-                <form method="post" action="admin/updateExt/update" class="mainForm api-form" data-api-msg="{% trans 'Update' %}">
-                <input type="hidden" name="filename" value="{{ext.type}}_{{ext.id}}" />
-                <input type="hidden" name="url" value="{{ext.download_url}}" />
-                <button type="submit" class="greyishBtn">{% trans 'Update' %}</button>
-                </form>
-				{% endif %}
-<form method="post" action="admin/updateExt/install" class="mainForm api-form" data-api-msg="{% trans 'install' %}">
-                <input type="hidden" name="filename" value="{{ext.type}}_{{ext.id}}" />
-                <input type="hidden" name="url" value="{{ext.download_url}}" />
-                <button type="submit" class="greyishBtn">{% trans 'Install' %}</button>
-                </form>
-				{% endif %} </td>
-            </tr>
-         {% endfor %}
+
+		{% for jss in json %}
+			<tr>
+                <td>{{jss['name']}}<br />
+                <strong>Wersja na GitHub:</strong>{{ jss['git_version'] }}<br />
+				<strong>Wersja na serwerze:</strong> {{ jss['aktualna_wersja'] }}<br />
+				</td>
+				<td align="right">
+
+					<form method="post" action="admin/updateExt/install" class="mainForm api-form" data-api-msg="{% trans 'install' %}">
+					<input type="hidden" name="filename" value="{{jss['namefull']}}" />
+					<input type="hidden" name="url" value="{{jss['svn_url']}}" />
+					<button type="submit" class="greyishBtn">{% trans 'Upload' %}</button>
+					</form>
+				</td>
+				</tr>
+		{% endfor %}
+		
 
         </tbody>
     </table>
