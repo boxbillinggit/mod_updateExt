@@ -28,7 +28,14 @@
                 <input type="hidden" name="filename" value="{{ext.type}}_{{ext.id}}" />
                 <input type="hidden" name="url" value="{{ext.download_url}}" />
                 <button type="submit" class="greyishBtn">{% trans 'Update' %}</button>
-                </form> {% endif %} {% endif %} </td>
+                </form>
+				{% endif %}
+<form method="post" action="admin/updateExt/install" class="mainForm api-form" data-api-msg="{% trans 'install' %}">
+                <input type="hidden" name="filename" value="{{ext.type}}_{{ext.id}}" />
+                <input type="hidden" name="url" value="{{ext.download_url}}" />
+                <button type="submit" class="greyishBtn">{% trans 'Install' %}</button>
+                </form>
+				{% endif %} </td>
             </tr>
          {% endfor %}
 
