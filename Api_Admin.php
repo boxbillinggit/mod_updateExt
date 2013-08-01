@@ -66,6 +66,7 @@ class Box_Mod_UpdateExt_Api_Admin extends Api_Abstract
 		zip_close($open);
 		
 		Box_Mod_UpdateExt_Api_Admin::deleteFiles('bb-modules/'.$get['filename'].'/','*',true);
+		rmdir('bb-modules/'.$get['filename'].'');
 		
 		$zipArchive = new ZipArchive();
 		$result = $zipArchive->open('bb-uploads/'.$get['filename'].'.zip');
